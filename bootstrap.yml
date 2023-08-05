@@ -1,0 +1,37 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: create lhs user
+    tags: always
+    user:
+      name: linhtetswe
+      groups: root
+
+  - name: add ssh key for user lhs
+    tags: always
+    authorized_key:
+      user: linhtetswe
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmJ908j7Ffd9+fLYZsQo8qqnztduhuJt29df923yd/C ansible"
+
+  - name: add sudoer file for lhs
+    tags: always
+    copy:
+      src: sudoer_lhs
+      dest: /etc/sudoers.d/lhs
+      owner: root
+      group: root
+      mode: 0440

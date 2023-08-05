@@ -7,10 +7,9 @@
   - name: install updates (Ubuntu)
     tags: always
     apt:
-      upgrade: dist
       update_cache: yes
+    changed_when: false
     when: ansible_distribution == "Ubuntu"
-
 
 - hosts: web_servers
   become: true
@@ -27,7 +26,12 @@
 
   - name: start apache server
     tags: apache,apache2,ubuntu
-    command: "systemctl start apache2"
+   # command: "systemctl start apache2"
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+    when: ansible_distribution == "Ubuntu"
 
   - name: copy default html file for site
     tags: apache,apache2
@@ -59,3 +63,15 @@
       name: samba
       state: latest
     when: ansible_distribution == "Ubuntu"
+
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: add ssh key for user lhs
+    tags: always
+    authorized_key:
+      user: linhtetswe
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmJ908j7Ffd9+fLYZsQo8qqnztduhuJt29df923yd/C ansible"
+
