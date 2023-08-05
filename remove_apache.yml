@@ -8,12 +8,24 @@
     apt:
       update_cache: yes
 
+  - name: killing apache2 server
+    command: "sudo systemctl stop apache2"
+
   - name: remove apache2 package
     apt:
       name: apache2
       state: absent
-  
+      autoremove: true
+
   - name: remove php support for apache
     apt:
       name: libapache2-mod-php
       state: absent
+      autoremove: true
+
+  - name: remove maria db
+    apt:
+      name: mariadb-server
+      state: absent
+      autoremove: true
+
