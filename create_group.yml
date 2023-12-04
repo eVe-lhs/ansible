@@ -1,0 +1,25 @@
+---
+
+- name: Create User Groups for web_servers
+  hosts: web_servers  # Or specify specific hosts/group from your inventory
+  become: yes
+  tasks:
+    - name: Ensure groups exist
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - developers
+        - testers
+
+- name: Create User Groups for database servers
+  hosts: db_servers
+  become: yes
+  tasks:
+    - name: Ensure groups exist
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - developers
+        - analysts

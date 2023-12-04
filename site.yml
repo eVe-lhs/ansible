@@ -11,67 +11,22 @@
     changed_when: false
     when: ansible_distribution == "Ubuntu"
 
+- hosts: all
+  become: true
+  roles:
+    - base
+
 - hosts: web_servers
   become: true
-  tasks:
-
-  - name: install apache and php package
-    tags: apache,apache2,ubuntu
-    apt:
-      name:
-        - apache2
-        - libapache2-mod-php
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-  - name: start apache server
-    tags: apache,apache2,ubuntu
-   # command: "systemctl start apache2"
-    service:
-      name: apache2
-      state: started
-      enabled: yes
-    when: ansible_distribution == "Ubuntu"
-
-  - name: copy default html file for site
-    tags: apache,apache2
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644
+  roles:
+    - web_servers
 
 - hosts: db_servers
-  tags: db,mariadb,ubuntu
   become: true
-  tasks:
-
-  - name: install mariadb package
-    apt:
-      name: mariadb-server
-      state: latest
-    when: ansible_distribution == "Ubuntu"
+  roles:
+    - db_servers
 
 - hosts: file_servers
   become: true
-  tasks:
-
-  - name: install samba package
-    tags: samba
-    package:
-      name: samba
-      state: latest
-    when: ansible_distribution == "Ubuntu"
-
-
-- hosts: all
-  become: true
-  tasks:
-
-  - name: add ssh key for user lhs
-    tags: always
-    authorized_key:
-      user: linhtetswe
-      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmJ908j7Ffd9+fLYZsQo8qqnztduhuJt29df923yd/C ansible"
-
+  roles:
+    - file_servers

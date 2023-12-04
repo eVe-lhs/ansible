@@ -1,0 +1,30 @@
+- hosts: db_servers
+  tags: db, ubuntu
+  become: true
+  tasks:
+    
+  - name: Stop Mysql Service
+    service:
+      name: mysql
+      state: stopped
+
+  - name: remove mysql_server package
+    apt:
+      name: mysql-server
+      state: absent
+    when: ansible_distribution == "Ubuntu"
+
+  - name: remove mysql_server_8.0
+    apt:
+      name: mysql-server-8.0
+      state: absent
+  
+  - name: remove mysql directory
+    file: 
+      path: /var/lib/mysql
+      state: absent
+
+  - name: perform auto remove
+    apt:
+      autoclean: yes
+      autoremove: yes

@@ -1,0 +1,21 @@
+---
+
+
+- name: Create User
+  hosts: db_servers
+  become: yes
+  vars:
+    mysql_root_password: "root"
+    mysql_database: "uit"
+    mysql_user: "lhs"
+    mysql_password: "lhs"
+  tasks:
+
+    - name: Run Query
+      mysql_query:
+        login_user: "{{ mysql_user }}"
+        login_password: "{{ mysql_password }}"
+        login_db: "{{ mysql_database }}"
+        query:
+          - "CREATE TABLE IF NOT EXISTS employees (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), age INT);"
+          - "INSERT INTO employees (name, age) VALUES ('Aye Myat Mon', 24), ('Myat Su Khin' ,21), ('Khine Thinzar Soe', 24) , ('La Wun Cho', 21), ('Lin Htet Swe', 22);"

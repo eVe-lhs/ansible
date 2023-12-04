@@ -1,0 +1,46 @@
+---
+
+- hosts: db_servers
+  tags: db,mariadb,ubuntu
+  become: true
+  tasks:
+
+    - name: flushing database
+      mysql_query:
+        login_user: root
+        login_password: root
+        query: FLUSH PRIVILEGES
+
+    - name: remove the user from mysql
+      mysql_user:
+        login_user: root
+        login_password: root
+        user: lhs
+        login_host: localhost
+        state: absent
+        check_implicit_admin: yes
+
+    - name: Remove MySQL Database
+      mysql_db:
+        login_user: root
+        login_password: root
+        name: uit
+        state: absent
+
+    - name: reset password
+      mysql_query:
+        login_user: root
+        login_password: root
+        query: ALTER USER 'root'@'localhost' IDENTIFIED with caching_sha2_password by ''
+
+    - name: Revert mysql
+      shell:
+        "systemctl revert mysql"
+
+    - name: reload daemon
+      shell:
+        "systemctl daemon-reload"
+
+    - name: restart mysql
+      shell:
+        "systemctl restart mysql"

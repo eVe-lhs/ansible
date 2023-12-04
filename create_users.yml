@@ -1,0 +1,48 @@
+---
+
+
+- name: User and Group Management for web_servers
+  hosts: web_servers  # Or specify specific hosts/group from your inventory
+  become: yes
+  tasks:
+    - name: Create user accounts
+      user:
+        name: "{{ item.username }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        groups: "{{ item.groups }}"
+        state: present
+      loop:
+        - { username: dev1, password: dev1, groups: "developers" }
+        - { username: dev2, password: dev2, groups: "developers" }
+        - { username: test1, password: test1, groups: "testers" }
+
+    - name: Ensure group exists
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - developers
+        - testers
+
+- name: User and Group Management for database servers
+  hosts: db_servers  # Or specify specific hosts/group from your inventory
+  become: yes
+  tasks:
+    - name: Create user accounts
+      user:
+        name: "{{ item.username }}"
+        password: "{{ item.password | password_hash('sha512') }}"
+        groups: "{{ item.groups }}"
+        state: present
+      loop:
+        - { username: dev1, password: dev1, groups: "developers" }
+        - { username: dev2, password: dev2, groups: "developers" }
+        - { username: analyst1, password: analyst1, groups: "analysts" }
+
+    - name: Ensure group exists
+      group:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - developers
+        - analysts

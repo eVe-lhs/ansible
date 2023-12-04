@@ -1,0 +1,33 @@
+---
+
+
+- name: User and Group Management for web_servers
+  hosts: web_servers  # Or specify specific hosts/group from your inventory
+  become: yes
+  tasks:
+
+    - name: Add SSH keys to authorized_keys
+      authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmJ908j7Ffd9+fLYZsQo8qqnztduhuJt29df923yd/C ansible"
+      loop:
+        - { name: dev1 }
+        - { name: dev2 }
+        - { name: test1 }
+          
+
+- name: User and Group Management for database servers
+  hosts: db_servers  # Or specify specific hosts/group from your inventory
+  become: yes
+  tasks:
+
+    - name: Add SSH keys to authorized_keys
+      authorized_key:
+        user: "{{ item.name }}"
+        state: present
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOmJ908j7Ffd9+fLYZsQo8qqnztduhuJt29df923yd/C ansible"
+      loop:
+        - { name: dev1 }
+        - { name: dev2 }
+        - { name: analyst1 }
